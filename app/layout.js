@@ -7,6 +7,7 @@ import Options from "./components/options/Options";
 import { OptionsProvider } from "./context/OptionsContext";
 import { ClickModeProvider } from "./context/ClickModeContext";
 import { SearchProvider } from "./context/SearchContext";
+import Footer from "./components/footer/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,6 +26,7 @@ export default function RootLayout({ children }) {
                         <Header />
                         {children}
                         <Options />
+                        <Footer />
                     </body>
                 </SearchProvider>
             </ClickModeProvider>
