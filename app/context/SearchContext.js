@@ -1,6 +1,6 @@
 // context for search options and functions
 'use client';
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const SearchContext = createContext();
 
@@ -16,6 +16,16 @@ export const SearchProvider = ({ children }) => {
     const [nodesInShortestPathOrder, setNodesInShortestPathOrder] = useState(
         []
     );
+
+    useEffect(() => {
+        if (searchStatus === 'stopped') {
+            console.log('Stopping search');
+        } else if (searchStatus === 'paused') {
+            console.log('Pausing search');
+        } else if (searchStatus === 'searching') {
+            console.log('Searching');
+        }
+    }, [searchStatus]);
 
     const updateNodeState = (row, col, updates) => {
         const newNodes = nodes.slice();
@@ -37,20 +47,41 @@ export const SearchProvider = ({ children }) => {
 
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+    const waitForResume = async () => {
+        while (searchStatus === 'paused') {
+            await sleep(100);
+        }
+    };
+
+    const idleYield = () => new Promise((resolve) => requestIdleCallback(() => resolve(), { timeout: 50 }));
+
     const display = async (visitedNodesInOrder, nodesInShortestPathOrder) => {
         for (let i = 1; i < visitedNodesInOrder.length; i++) {
+            if (searchStatus === 'stopped') {
+                return;
+            }
+            await waitForResume();
             const node = visitedNodesInOrder[i];
             document.getElementById(`node-${node.row}-${node.col}`).classList.add('isVisited');
             await sleep(searchSpeed);
+            await idleYield();
         }
-        displayPath(nodesInShortestPathOrder);  // Call the displayPath after all visited nodes
+
+        if (searchStatus !== 'stopped') {
+            displayPath(nodesInShortestPathOrder);  // Call the displayPath after all visited nodes
+        }
     };
 
     const displayPath = async (nodesInShortestPathOrder) => {
         for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
+            if (searchStatus === 'stopped') {
+                return;
+            }
+            await waitForResume();
             const node = nodesInShortestPathOrder[i];
             updateNodeState(node.row, node.col, { isPath: true });
             await sleep(searchSpeed);
+            await idleYield();
         }
     };
 
@@ -251,6 +282,20 @@ export const SearchProvider = ({ children }) => {
         await display(visitedNodesInOrder, nodesInShortestPathOrder);
         setSearchStatus('idle');
 
+    };
+
+    const handlePauseSearch = async () => {
+        console.log('Pause search');
+        if (searchStatus === 'searching') {
+            await setSearchStatus('paused');
+        } else if (searchStatus === 'paused') {
+            await setSearchStatus('searching');
+        }
+    };
+
+    const handleStopSearch = async () => {
+        console.log('Stop search');
+        await setSearchStatus('stopped');
     };
 
     const resetState = () => {

@@ -11,7 +11,15 @@ const Grid = () => {
     const { nodeSize } = useOptions();
     const [gridSize, setGridSize] = useState({ width: 0, height: 0 });
     const containerRef = useRef(null);
-    const { nodes, setNodes, handleStartSearch, resetState, searchStatus } = useSearch();
+    const {
+        nodes,
+        setNodes,
+        handleStartSearch,
+        handlePauseSearch,
+        handleStopSearch,
+        resetState,
+        searchStatus,
+    } = useSearch();
     const { setClickMode } = useClickMode();
 
     useEffect(() => {
@@ -94,11 +102,25 @@ const Grid = () => {
             </div>
             <div className="absolute flex bottom-2 right-2 gap-2">
                 <button
-                    className="px-2 py-1 border-2 rounded-xl bg-gray-50 disabled:opacity-50"
+                    className="w-12 h-12 border-2 rounded-full bg-green-700 disabled:opacity-50"
                     onClick={handleStartSearch}
                     disabled={searchStatus !== 'idle'}
                 >
-                    Start search
+                    <img src="/play.svg" alt="Start search" className="p-2" />
+                </button>
+                <button
+                    className="w-12 h-12 border-2 rounded-full bg-yellow-700 disabled:opacity-50"
+                    onClick={handlePauseSearch}
+                    disabled={searchStatus !== 'searching'}
+                >
+                    <img src="/pause.svg" alt="Pause search" className="p-2" />
+                </button>
+                <button
+                    className="w-12 h-12 border-2 rounded-full bg-red-700 disabled:opacity-50"
+                    onClick={handleStopSearch}
+                    disabled={searchStatus !== 'searching' || searchStatus === 'paused'}
+                >
+                    <img src="/stop.svg" alt="Stop search" className="p-2" />
                 </button>
                 <button
                     className="px-2 py-1 border-2 rounded-xl bg-gray-50 disabled:opacity-50"
