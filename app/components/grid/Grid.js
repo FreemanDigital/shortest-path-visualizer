@@ -3,9 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import Node from '../node/Node';
 import createNodeModel from '../node/NodeModel';
-import { useOptions } from '@/app/context/OptionsContext';
-import { useSearch } from '@/app/context/SearchContext';
-import { useClickMode } from '@/app/context/ClickModeContext';
+import { useOptions } from '../../context/OptionsContext';
+import { useSearch } from '../../context/SearchContext';
+import { useClickMode } from '../../context/ClickModeContext';
 
 const Grid = () => {
     const { nodeSize } = useOptions();

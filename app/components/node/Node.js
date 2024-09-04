@@ -1,8 +1,8 @@
 'use client';
 
-import { useOptions } from '@/app/context/OptionsContext';
-import { useClickMode } from '@/app/context/ClickModeContext';
-import { useSearch } from '@/app/context/SearchContext';
+import { useOptions } from '../../context/OptionsContext';
+import { useClickMode } from '../../context/ClickModeContext';
+import { useSearch } from '../../context/SearchContext';
 
 const Node = ({ node }) => {
     const { row, col, isStart, isEnd, isWall, isVisited, isPath } = node;
