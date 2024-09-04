@@ -1,6 +1,13 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 
+import Header from "./components/header/Header";
+import Options from "./components/options/Options";
+
+import { OptionsProvider } from "./context/OptionsContext";
+import { ClickModeProvider } from "./context/ClickModeContext";
+import { SearchProvider } from "./context/SearchContext";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -11,7 +18,17 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+        <OptionsProvider>
+            <ClickModeProvider>
+                <SearchProvider>
+                    <body className={inter.className}>
+                        <Header />
+                        {children}
+                        <Options />
+                    </body>
+                </SearchProvider>
+            </ClickModeProvider>
+        </OptionsProvider>
     </html>
   );
 }
